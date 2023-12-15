@@ -53,12 +53,13 @@ const App = () => {
   const [username, setUsername] = useState('') 
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
   const [completeMessage, setCompleteMessage] = useState(null)
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
   const [newTitle, setNewTitle] = useState('')
 
-  const [errorMessage, setErrorMessage] = useState(null)
+  
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -83,7 +84,19 @@ const App = () => {
       author: newAuthor,
       url: newUrl
     }
- 
+    console.log(blogObject)
+    if (!blogObject.title || !blogObject.author || !blogObject.url) {
+  
+      setErrorMessage(`Please fill the required fields`)
+      setNewTitle('')
+      setNewAuthor('')
+      setNewUrl('')
+      setCompleteMessage(null)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 3000)
+      return
+    }
  
     blogService
       .create(blogObject)
@@ -93,7 +106,7 @@ const App = () => {
         setNewAuthor('')
         setNewUrl('')
         setCompleteMessage(
-          `Added ${newName}`
+          `a new blog ${newTitle} by ${newAuthor} added `
         )
         setTimeout(() => {
           setCompleteMessage(null)
@@ -101,8 +114,7 @@ const App = () => {
     
       })
       .catch(error => {
-        //console.log(error.response.data)
-        //setErrorMessage(`${error.response.data.error}`)
+        setErrorMessage(`something unexpected happened`)
         setNewTitle('')
         setNewAuthor('')
         setNewUrl('')
@@ -120,6 +132,12 @@ const App = () => {
     setUsername('')
     setPassword('')
     window.localStorage.clear()
+    setCompleteMessage(
+      `you are logged out `
+    )
+    setTimeout(() => {
+      setCompleteMessage(null)
+    }, 3000)
   }
 
   const handleLogin = async (event) => {
@@ -137,8 +155,12 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
+      setCompleteMessage(`you are logged in `)
+      setTimeout(() => {
+        setCompleteMessage(null)
+      }, 3000)
     } catch (exception) {
-      setErrorMessage('wrong credentials')
+      setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -162,6 +184,8 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={completeMessage} />
+        <Error message={errorMessage} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -189,6 +213,8 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification message={completeMessage} />
+      <Error message={errorMessage} />
       <p>{user.name} logged in <button onClick={() => logout()}>logout</button> </p> 
       <h2>create new</h2>
       <BlogForm 
