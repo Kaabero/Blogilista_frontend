@@ -28,6 +28,25 @@ const Error = ({ message }) => {
   )
 }
 
+const BlogForm = ({addBlog, newTitle, handleTitleChange, newAuthor, handleAuthorChange, newUrl, handleUrlChange}) => {
+  return (
+    <form onSubmit={addBlog}>
+    <div>title: <input value={newTitle} 
+    onChange={handleTitleChange} 
+    />
+    </div>
+    <div>author: <input value={newAuthor}
+    onChange={handleAuthorChange}
+    />
+    </div>
+    <div>url: <input value={newUrl}
+    onChange={handleUrlChange}
+    />
+    </div>
+    <button type="submit">create</button>
+  </form>
+  )
+}
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -35,6 +54,9 @@ const App = () => {
   const [password, setPassword] = useState('') 
   const [user, setUser] = useState(null)
   const [completeMessage, setCompleteMessage] = useState(null)
+  const [newAuthor, setNewAuthor] = useState('')
+  const [newUrl, setNewUrl] = useState('')
+  const [newTitle, setNewTitle] = useState('')
 
   const [errorMessage, setErrorMessage] = useState(null)
 
@@ -52,6 +74,45 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+
+  const addBlog = (event) => {
+    event.preventDefault()
+    const blogObject = {
+      title: newTitle,
+      author: newAuthor,
+      url: newUrl
+    }
+ 
+ 
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+        setNewTitle('')
+        setNewAuthor('')
+        setNewUrl('')
+        setCompleteMessage(
+          `Added ${newName}`
+        )
+        setTimeout(() => {
+          setCompleteMessage(null)
+        }, 3000)
+    
+      })
+      .catch(error => {
+        //console.log(error.response.data)
+        //setErrorMessage(`${error.response.data.error}`)
+        setNewTitle('')
+        setNewAuthor('')
+        setNewUrl('')
+        setCompleteMessage(null)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+      })      
+  }
+  
 
   const logout = () => {
     console.log('logging out')
@@ -82,6 +143,19 @@ const App = () => {
         setErrorMessage(null)
       }, 5000)
     }
+  }
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value)
+  }
+
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value)
+  }
+
+  const handleUrlChange = (event) => {
+    setNewUrl(event.target.value)
+    
   }
 
   if (user === null) {
@@ -116,6 +190,16 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p>{user.name} logged in <button onClick={() => logout()}>logout</button> </p> 
+      <h2>create new</h2>
+      <BlogForm 
+          addBlog={addBlog} 
+          newAuthor={newAuthor} 
+          handleAuthorChange={handleAuthorChange} 
+          newTitle= {newTitle} 
+          handleTitleChange={handleTitleChange} 
+          newUrl= {newUrl} 
+          handleUrlChange={handleUrlChange} 
+      />
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
