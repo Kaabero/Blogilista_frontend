@@ -14,9 +14,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const [completeMessage, setCompleteMessage] = useState(null)
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
-  const [newTitle, setNewTitle] = useState('')
   const [creatingVisible, setCreatingVisible] = useState(false)
 
   
@@ -36,56 +33,35 @@ const App = () => {
     }
   }, [])
 
-
-  const addBlog = (event) => {
-    event.preventDefault()
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl
-    }
+  const addBlog = (blogObject) => {
     console.log(blogObject)
     if (!blogObject.title || !blogObject.author || !blogObject.url) {
   
       setErrorMessage(`Please fill the required fields`)
-      setNewTitle('')
-      setNewAuthor('')
-      setNewUrl('')
       setCompleteMessage(null)
       setTimeout(() => {
         setErrorMessage(null)
       }, 3000)
       return
     }
- 
     blogService
       .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setNewTitle('')
-        setNewAuthor('')
-        setNewUrl('')
         setCreatingVisible(false)
-        setCompleteMessage(
-          `a new blog ${newTitle} by ${newAuthor} added `
-        )
+        setCompleteMessage(`a new blog ${blogObject.title} by ${blogObject.author} added `)
         setTimeout(() => {
           setCompleteMessage(null)
         }, 3000)
-    
       })
       .catch(error => {
         setErrorMessage(`something unexpected happened`)
-        setNewTitle('')
-        setNewAuthor('')
-        setNewUrl('')
         setCompleteMessage(null)
         setTimeout(() => {
           setErrorMessage(null)
         }, 3000)
       })      
   }
-  
 
   const logout = () => {
     console.log('logging out')
@@ -156,15 +132,7 @@ const App = () => {
       <button onClick={() => setCreatingVisible(true)}>create new blog</button>
       </div>
       <div style={showWhenVisible}>
-        <BlogForm 
-          addBlog={addBlog} 
-          newAuthor={newAuthor} 
-          handleAuthorChange={({ target }) => setNewAuthor(target.value)} 
-          newTitle= {newTitle} 
-          handleTitleChange={({ target }) => setNewTitle(target.value)}  
-          newUrl= {newUrl} 
-          handleUrlChange={({ target }) => setNewUrl(target.value)} 
-        />
+        <BlogForm createBlog={addBlog} />
         <button onClick={() => setCreatingVisible(false)}>cancel</button>
       </div>
       {blogs.map(blog =>
