@@ -152,6 +152,8 @@ const App = () => {
   const blogForm = () => {
     const hideWhenVisible = { display: creatingVisible ? 'none' : '' }
     const showWhenVisible = { display: creatingVisible ? '' : 'none' }
+    const sortedBlogs = blogs.sort((a ,b) => b.likes - a.likes)
+    
     return (
     <div>
       <h2>blogs</h2>
@@ -165,7 +167,7 @@ const App = () => {
         <BlogForm createBlog={addBlog} />
         <button onClick={() => setCreatingVisible(false)}>cancel</button>
       </div>
-      {blogs.map(blog =>
+      {sortedBlogs.map(blog =>
         <Blog 
           key={blog.id} 
           blog={blog}
