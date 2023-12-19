@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 const Blog = ({ blog }) => {
+  console.log('blog.user', blog.user)
   const [showingVisible, setShowingVisible] = useState(false)
   const hideWhenVisible = { display: showingVisible ? 'none' : '' }
   const showWhenVisible = { display: showingVisible ? '' : 'none' }
@@ -26,6 +27,8 @@ const Blog = ({ blog }) => {
         URL: {blog.url} <br>
         </br>
         likes: {blog.likes} <button onClick={() => addLike()}>like</button><br>
+        </br>
+        Added by: {blog.user.name} <br>
         </br>
         <button onClick={() => setShowingVisible(false)}>hide</button>
         </div>
