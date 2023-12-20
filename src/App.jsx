@@ -25,7 +25,7 @@ const App = () => {
   }, [blogs])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
@@ -65,7 +65,39 @@ const App = () => {
       })      
   }
 
-    
+  const removeBlog = id => {
+    const blog = blogs.find(b => b.id === id)
+    console.log('removable blog:', blog.title, blog.id)
+    if (window.confirm(`Remove blog '${blog.title}' by ${blog.author}?`)) {
+      console.log('id', id)
+      blogService
+        .remove(id)
+        .then(response => {
+          console.log('response', response)
+          const filtered = blogs.filter(blog => blog.id !== id)
+          console.log('filtered', filtered)
+          setBlogs(filtered)
+          setCompleteMessage(`Deleted blog '${blog.title}'`
+          )
+          setTimeout(() => {
+            setCompleteMessage(null)
+          }, 3000)
+      })
+      .catch(error => {
+        setErrorMessage(
+          `Information of blog '${blog.title}' has already been removed from server`
+        )
+        setCompleteMessage(null)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 3000)
+        setTimeout(() => {
+          //location.reload()
+        }, 3000)
+      })
+    }
+  }
+ 
   const addLikeOf = id => {
     const blog = blogs.find(n => n.id === id)
     console.log('likes', blog.likes)
@@ -91,7 +123,7 @@ const App = () => {
         })      
     }
 
-
+  
 
   const logout = () => {
     console.log('logging out')
@@ -171,7 +203,9 @@ const App = () => {
         <Blog 
           key={blog.id} 
           blog={blog}
-          addLike={() => addLikeOf(blog.id)} />
+          addLike={() => addLikeOf(blog.id)}
+          remove={() => removeBlog(blog.id)}
+          loggedUser={user.username} />
       )}
     </div>
     )
