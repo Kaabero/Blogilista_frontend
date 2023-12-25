@@ -21,19 +21,18 @@ const Blog = ({ blog, addLike, remove, loggedUser }) => {
 
     <div style={blogStyle}>
       <div>
-        Title: {blog.title} <br>
-        </br>
+        Title: {blog.title} <br/>
         <div style={hideWhenVisible}>
           <button onClick={() => setShowingVisible(true)}>view</button>
         </div>
         <div style={showWhenVisible}>
-        Author: {blog.author} <br />
+          Author: {blog.author} <br />
 
-        URL: {blog.url} <br />
+          URL: {blog.url} <br />
 
-        likes: {blog.likes} <button onClick={addLike}>like</button><br />
+          likes: {blog.likes} <button onClick={addLike}>like</button><br />
 
-        Added by: {blog.user.name} <br />
+          Added by: {blog.user.name} <br />
 
           {loggedUser === blog.user.username && <><button onClick={remove}>remove</button> <br /></>}
 

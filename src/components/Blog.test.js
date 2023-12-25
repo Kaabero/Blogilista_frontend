@@ -1,23 +1,60 @@
 import React from 'react'
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 
 test('renders title', () => {
   const blog = {
-    title: 'Component testing is done with react-testing-library',
-    author: 'Katri',
+    title: 'Test Blog',
+    author: 'Test Author',
     url: 'www.katri.fi',
     likes: 1,
     user: {
-        username: "Katri",
-        name: "Katri",
+        username: "testuser",
+        name: "Test User",
         id: "1"
     }
   }
 
-  render(<Blog blog={blog} loggedUser='Katri' />)
+  const mockAddLike = jest.fn()
+  const mockRemove = jest.fn()
 
-  const element = screen.getByText('Title: Component testing is done with react-testing-library')
+  render(<Blog blog={blog} addLike={mockAddLike} remove={mockRemove} loggedUser='testuser' />)
+
+  const element = screen.getByText('Title: Test Blog')
   expect(element).toBeDefined()
 })
+
+test('renders blog author, url, likes and user after clicking view button', async () => {
+    
+    const blog = {
+      title: 'Test Blog',
+      author: 'Test Author',
+      url: 'www.katri.fi',
+      likes: 1,
+      user: {
+        name: 'Test User',
+        username: 'testuser',
+        id: 1
+      },
+    }
+  
+    const mockAddLike = jest.fn()
+    const mockRemove = jest.fn()
+
+    const user = userEvent.setup()
+  
+    render(
+      <Blog blog={blog} addLike={mockAddLike} remove={mockRemove} loggedUser="testuser" />
+    )
+  
+
+    await user.click(screen.getByText('view'))
+
+    expect(screen.getByText(blog.url, {exact: false}))
+    expect(screen.getByText(blog.author, {exact: false}))
+    expect(screen.getByText(blog.likes, {exact: false}))
+    expect(screen.getByText(blog.user.name, {exact: false}))
+  })
+  
