@@ -36,7 +36,29 @@ describe('Blog app', function() {
         })
           
     })
+
+    describe('When logged in', function() {
+        beforeEach(function() {
+            cy.get('#username').type('testuser')
+            cy.get('#password').type('testpassword')
+            cy.get('#login-button').click()
+           
+        })
+      
+        it('A blog can be created', function() {
+            cy.contains('create new blog').click()
+            cy.get('#title').type('a blog created by cypress')
+            cy.get('#author').type('Test Blogger')
+            cy.get('#url').type('www.test.fi')
+            cy.get('#create-button').click()
+            cy.contains('a blog created by cypress')
+        })
+  
+           
+    })
+})
+      
+     
         
     
       
-})
