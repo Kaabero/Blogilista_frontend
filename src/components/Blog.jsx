@@ -34,7 +34,7 @@ const Blog = ({ blog, addLike, remove, loggedUser }) => {
 
           Added by: {blog.user.name} <br />
 
-          {loggedUser === blog.user.username && <><button onClick={remove}>remove</button> <br /></>}
+          {loggedUser === blog.user.username && <><button id='remove-button' onClick={remove}>remove</button> <br /></>}
 
           <button onClick={() => setShowingVisible(false)}>hide</button>
         </div>
