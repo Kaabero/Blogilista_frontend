@@ -23,14 +23,14 @@ const Blog = ({ blog, addLike, remove, loggedUser }) => {
       <div>
         Title: {blog.title} <br/>
         <div style={hideWhenVisible}>
-          <button onClick={() => setShowingVisible(true)}>view</button>
+          <button id='view-button' onClick={() => setShowingVisible(true)}>view</button>
         </div>
         <div style={showWhenVisible}>
           Author: {blog.author} <br />
 
           URL: {blog.url} <br />
 
-          likes: {blog.likes} <button onClick={addLike}>like</button><br />
+          likes: {blog.likes} <button id='like-button' onClick={addLike}>like</button><br />
 
           Added by: {blog.user.name} <br />
 
