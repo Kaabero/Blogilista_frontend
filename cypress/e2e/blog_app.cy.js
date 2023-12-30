@@ -65,7 +65,7 @@ describe('Blog app', function() {
             cy.contains('likes: 1')
         })
 
-        it.only('A blog can be removed by the creator of the blog', function() {
+        it('A blog can be removed by the creator of the blog', function() {
             cy.contains('create new blog').click()
             cy.get('#title').type('a blog created by cypress')
             cy.get('#author').type('Test Blogger')
@@ -73,7 +73,34 @@ describe('Blog app', function() {
             cy.get('#create-button').click()
             cy.get('#view-button').click()
             cy.get('#remove-button').click()
-            cy.contains('a blog created by cypress').should('not.exist')
+            cy.get('html').should('not.contain', 'a blog created by cypress')
+            
+        })
+
+        it.only('only the creator can see the delete button of a blog, not anyone else.', function() {
+
+            const anotherUser = {
+                name: 'Test User 2',
+                username: 'testuser2',
+                password: 'testpassword2'
+              }
+            cy.request('POST', 'http://localhost:3003/api/users/', anotherUser)
+            cy.contains('create new blog').click()
+            cy.get('#title').type('a blog created by cypress')
+            cy.get('#author').type('Test Blogger')
+            cy.get('#url').type('www.test.fi')
+            cy.get('#create-button').click()
+            cy.get('#view-button').click()
+            cy.contains('remove')
+            cy.contains('logout').click()
+            cy.get('#username').type('testuser2')
+            cy.get('#password').type('testpassword2')
+            cy.get('#login-button').click()
+            cy.get('#view-button').click()
+            cy.get('#remove-button').should('not.exist')
+
+
+
             
         })
   
